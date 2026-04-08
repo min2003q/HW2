@@ -17,7 +17,7 @@ WORKDIR /app
 #     && rm -rf /var/lib/apt/lists/*
 
 # requirements.txt 파일 복사 및 의존성 설치
-# --no-cache-dir 옵션을 사용하여 캐시를 남기지 않아 도커 이미지 용량을 최소화합니다.
+# --no-cache-dir 옵션을 사용하여 캐시를 남기지 않아 도커 이미지 용량을 최소화합니다..
 COPY requirements.txt .
 
 RUN pip install --no-cache-dir --upgrade pip \
