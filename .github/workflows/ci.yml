@@ -51,8 +51,16 @@ jobs:
       - name: Deploy to Local Self-hosted Runner
         shell: powershell
         run: |
+          # 1. 최신 이미지 다운로드
           docker pull ${{ secrets.DOCKERHUB_USERNAME }}/weight-machine-api:latest
+          
+          # 2. 기존 컨테이너 강제 정리 (에러가 나도 무시하고 진행)
           $containerName = "weight-machine-api"
-          docker stop $containerName 2>$null
-          docker rm $containerName 2>$null
+          try {
+              docker rm -f $containerName
+          } catch {
+              Write-Host "No existing container to remove."
+          }
+          
+          # 3. 새 컨테이너 실행
           docker run -d --name $containerName -p 8000:8000 --restart unless-stopped ${{ secrets.DOCKERHUB_USERNAME }}/weight-machine-api:latest
