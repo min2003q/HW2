@@ -54,7 +54,17 @@ jobs:
     
     steps:
       - name: Deploy to Local Self-hosted Runner
+        shell: pwsh
         run: |
+          # 1. 최신 이미지 다운로드
           docker pull ${{ secrets.DOCKERHUB_USERNAME }}/weight-machine-api:latest
-          if (docker ps -a -q -f name=weight-machine-api) { docker stop weight-machine-api; docker rm weight-machine-api }
-          docker run -d --name weight-machine-api -p 8000:8000 --restart unless-stopped ${{ secrets.DOCKERHUB_USERNAME }}/weight-machine-api:latest
+          
+          # 2. 기존 컨테이너가 있으면 끄고 지우기 (오류 무시 처리)
+          $containerName = "weight-machine-api"
+          if (docker ps -a -q -f name=$containerName) {
+              docker stop $containerName
+              docker rm $containerName
+          }
+          
+          # 3. 새 컨테이너 실행
+          docker run -d --name $containerName -p 8000:8000 --restart unless-stopped ${{ secrets.DOCKERHUB_USERNAME }}/weight-machine-api:latest
