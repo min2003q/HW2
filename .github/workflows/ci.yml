@@ -48,27 +48,13 @@ jobs:
           cache-to: type=registry,ref=${{ secrets.DOCKERHUB_USERNAME }}/weight-machine-api:buildcache,mode=max
 
   deploy:
-    # 1. build_and_push 작업이 성공적으로 끝난 후 실행
     needs: build_and_push
-    # 2. PR이 아닌 직접 푸시(Merge 등) 된 경우에만 배포 실행
     if: github.event_name != 'pull_request'
-    # 3. GitHub에 등록된 로컬의 Self-hosted Runner 에서 실행
     runs-on: self-hosted
     
     steps:
       - name: Deploy to Local Self-hosted Runner
         run: |
-          # 1. Docker Hub에서 새롭게 푸시된 최신(latest) 이미지 다운로드
           docker pull ${{ secrets.DOCKERHUB_USERNAME }}/weight-machine-api:latest
-          
-          # 2. 기존에 실행 중인 동일한 이름의 컨테이너가 있다면 중지하고 삭제 (처음 실행시 발생할 수 있는 에러는 || true 로 쿨하게 무시!)
-          docker stop weight-machine-api || true
-          docker rm weight-machine-api || true
-          
-          # 3. 새로운 이미지로 컨테이너 실행 (백그라운드에서 실행하며 8000번 포트 연결)
-          # 재부팅 시에도 자동으로 실행될 수 있도록 --restart unless-stopped 추가
-          docker run -d \
-            --name weight-machine-api \
-            -p 8000:8000 \
-            --restart unless-stopped \
-            ${{ secrets.DOCKERHUB_USERNAME }}/weight-machine-api:latest
+          if (docker ps -a -q -f name=weight-machine-api) { docker stop weight-machine-api; docker rm weight-machine-api }
+          docker run -d --name weight-machine-api -p 8000:8000 --restart unless-stopped ${{ secrets.DOCKERHUB_USERNAME }}/weight-machine-api:latest
