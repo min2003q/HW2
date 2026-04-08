@@ -54,14 +54,16 @@ jobs:
     
     steps:
       - name: Deploy to Local Self-hosted Runner
-        shell: pwsh
+        # pwsh 대신 윈도우 기본 powershell을 사용하도록 명시하거나 생략합니다.
+        shell: powershell
         run: |
           # 1. 최신 이미지 다운로드
           docker pull ${{ secrets.DOCKERHUB_USERNAME }}/weight-machine-api:latest
           
-          # 2. 기존 컨테이너가 있으면 끄고 지우기 (오류 무시 처리)
+          # 2. 기존 컨테이너가 있으면 끄고 지우기 (PowerShell 문법)
           $containerName = "weight-machine-api"
-          if (docker ps -a -q -f name=$containerName) {
+          $exists = docker ps -a -q -f "name=$containerName"
+          if ($exists) {
               docker stop $containerName
               docker rm $containerName
           }
