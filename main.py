@@ -1,4 +1,6 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 import uvicorn
 # import torch # 실제 모델 로드를 위해 필요한 모듈 
@@ -11,11 +13,18 @@ app = FastAPI(
     version="1.0.0"
 )
 
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+@app.get("/", include_in_schema=False)
+async def read_index():
+    return FileResponse("static/index.html")
+
 # 예측 결과를 담을 데이터 모델
 class PredictionResponse(BaseModel):
     machine_name: str
     exercise_instructions: str
     confidence_score: float
+    recommended_machines: list[str]
 
 # TODO: 실제 MLOps 파이프라인에서 학습된 모델을 로드하는 로직을 여기에 구현합니다.
 # model = load_model("path/to/your/model.pt") 
@@ -33,7 +42,8 @@ def predict_machine(image_bytes: bytes) -> dict:
     return {
         "machine_name": "스미스 머신 (Smith Machine)",
         "exercise_instructions": "1. 바벨의 적절한 높이를 설정합니다. \n2. 어깨 넓이로 발을 벌리고 바벨을 어깨 위에 올립니다. \n3. 허리를 곧게 펴고 스쿼트 동작을 수행합니다.",
-        "confidence_score": 0.95
+        "confidence_score": 0.95,
+        "recommended_machines": ["레그 프레스 머신", "레그 익스텐션", "레그 컬"]
     }
 
 
@@ -55,7 +65,8 @@ async def predict_weight_machine(file: UploadFile = File(...)):
         return PredictionResponse(
             machine_name=result["machine_name"],
             exercise_instructions=result["exercise_instructions"],
-            confidence_score=result["confidence_score"]
+            confidence_score=result["confidence_score"],
+            recommended_machines=result["recommended_machines"]
         )
     
     except Exception as e:

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI 웨이트 머신 가이드</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Gym Vision AI</h1>
+            <p>웨이트 머신 사진을 업로드하면 사용법을 알려드립니다.</p>
+        </header>
+
+        <main>
+            <div class="upload-container" id="drop-zone">
+                <input type="file" id="file-input" accept="image/*" hidden>
+                <div class="upload-content">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="upload-icon"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                    <p class="upload-text"><strong>클릭</strong> 하거나 이미지를 드래그 앤 드롭 하세요</p>
+                    <p class="upload-hint">PNG, JPG, JPEG 지원</p>
+                </div>
+            </div>
+
+            <div id="image-preview-container" class="hidden">
+                <img id="image-preview" src="" alt="업로드된 이미지 미리보기">
+                <button id="analyze-btn" class="primary-btn">AI 분석 시작하기</button>
+            </div>
+
+            <div id="loading" class="hidden">
+                <div class="spinner"></div>
+                <p>AI가 이미지를 꼼꼼히 분석하고 있습니다...</p>
+            </div>
+
+            <div id="result-container" class="hidden">
+                <div class="result-card">
+                    <div class="result-header">
+                        <h2 id="machine-name">Machine Name</h2>
+                        <span class="confidence-badge" id="confidence-score">95%</span>
+                    </div>
+                    <div class="instructions-container">
+                        <h3>사용 방법</h3>
+                        <div id="instructions">
+                            <!-- Instructions will be injected here -->
+                        </div>
+                    </div>
+                    
+                    <div class="recommendations-container">
+                        <h3>함께하면 좋은 추천 머신 🏋️</h3>
+                        <div id="recommended-machines" class="badge-container">
+                            <!-- Recommended machine badges will be injected here -->
+                        </div>
+                    </div>
+                    
+                    <button id="reset-btn" class="secondary-btn">다른 사진 분석하기</button>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script src="/static/script.js"></script>
+</body>
+</html>

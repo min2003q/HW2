@@ -2,6 +2,7 @@ fastapi==0.103.2
 uvicorn==0.23.2
 pydantic==2.4.2
 python-multipart==0.0.6
+aiofiles==23.2.1
 # MLOps 파이프라인에서 실제 모델 서빙에 필요한 패키지들 (예시)
 # torch==2.0.1
 # torchvision==0.15.2
